@@ -1,14 +1,30 @@
 
 name: CI
+run-name: "CI ${{ inputs.leg || github.event_name }} ${{ inputs.racecar_run }}"
 permissions:
   contents: read
 on:
   workflow_dispatch:
+    inputs:
+      leg:
+        description: "baseline (uninstrumented) or instrumented (under chalk/curiosity)"
+        type: choice
+        options: [instrumented, baseline]
+        default: baseline
+      profile:
+        description: "CrashOverride chalk profile"
+        type: string
+        default: curiosity-tests-racecar
+      racecar_run:
+        description: "racecar correlation token, echoed into the run name"
+        type: string
+        default: ""
   push:
     branches: [ "main"]
   pull_request:
     
 env:
+  CHALK_ON: ${{ inputs.leg == 'instrumented' }}
   NIXPKGS_ALLOW_UNFREE: 1
 
 
@@ -34,4 +50,3 @@ jobs:
       id-token: write
     uses: ./.github/workflows/bench.yml
     secrets: inherit 
-
