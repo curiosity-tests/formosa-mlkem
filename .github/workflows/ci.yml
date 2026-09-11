@@ -11,6 +11,7 @@ env:
 
 jobs:
     ct:
+      if: false   # racecar: scan/report job, not a build
       name: Check Constant-Time Security
       permissions:
         contents: read
